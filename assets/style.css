@@ -51,6 +51,17 @@ a {
 		padding-right: 4rem;
 		padding-top: 3rem;
 
+		.avatar {
+			display: flex;
+			justify-content: center;
+			margin-bottom: 1rem;
+
+			img {
+				border-radius: 50%;
+				width: 100px;
+			}
+		}
+
 		.socials {
 			margin-top: 3rem;
 			.socials-links {
