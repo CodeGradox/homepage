@@ -51,6 +51,10 @@ a {
 		padding-right: 4rem;
 		padding-top: 3rem;
 
+		a {
+			color: var(--text-color-aside);
+		}
+
 		.avatar {
 			display: flex;
 			justify-content: center;
@@ -62,12 +66,16 @@ a {
 			}
 		}
 
-		.socials {
-			margin-top: 3rem;
-			.socials-links {
+		.name {
+			margin-bottom: 3rem;
+		}
+
+		.section {
+			margin-bottom: 2rem;
+			.items {
 				display: flex;
 				flex-direction: column;
-				align-items: center;
+				align-items: left;
 				gap: 0.75rem;
 			}
 		}
