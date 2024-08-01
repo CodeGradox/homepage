@@ -2,8 +2,10 @@
 	color-scheme: light dark;
 	--text-color: light-dark(#060606, #f9f9f9);
 	--primary-background: light-dark(#f9f9f9, #1a1a1a);
-	--text-color-aside: light-dark(#f9f9f9, #f9f9f9);
-	--primary-background-aside: light-dark(#184781, #184781);
+	--watermark-color: light-dark(#0000000a, #ffffff0a);
+
+	--text-color-aside: light-dark(#3d3434, #f9f9f9);
+	--primary-background-aside: light-dark(#dfe3ff, #313441);
 }
 
 body {
@@ -74,5 +76,24 @@ a {
 		padding-left: 3rem;
 		padding-right: 3rem;
 		padding-top: 3rem;
+		position: relative;
+
+		.watermark {
+			position: absolute;
+			font-size: 10rem;
+			color: var(--watermark-color);
+			font-family: "Abril FatFace";
+			font-weight: 900;
+			letter-spacing: -0.3rem;
+			white-space: nowrap;
+			user-select: none;
+			bottom: 1rem;
+			left: 3rem;
+		}
+
+		.lang-logo {
+			width: 0.75em;
+			filter: grayscale(75%);
+		}
 	}
 }
