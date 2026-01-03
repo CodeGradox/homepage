@@ -33,6 +33,12 @@ func main() {
 		http.ServeFile(w, r, "./public/robots.txt")
 	})
 
+	// Health check endpoint for deployment platforms
+	router.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	})
+
 	// Homepage and catch-all.
 	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		templates.ExecuteTemplate(w, "index.html", nil)
