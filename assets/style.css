@@ -1,124 +1,108 @@
 :root {
-	color-scheme: light dark;
-	--text-color: light-dark(#060606, #f9f9f9);
-	--primary-background: light-dark(#f9f9f9, #1a1a1a);
-	--watermark-color: light-dark(#0000000a, #ffffff0a);
+  color-scheme: light dark;
+  --text-color: light-dark(#060606, #f9f9f9);
+  --primary-background: light-dark(#f9f9f9, #1a1a1a);
 
-	--text-color-aside: light-dark(#3d3434, #f9f9f9);
-	--primary-background-aside: light-dark(#dfe3ff, #313441);
+  --text-color-aside: light-dark(#3d3434, #f9f9f9);
+  --primary-background-aside: light-dark(#dfe3ff, #313441);
 
-	--flex-justify-content: left;
-	--name-margin: 3rem;
-	--section-margin: 2rem;
-	--watermark-opacity: 1;
+  --flex-justify-content: left;
+  --name-margin: 3rem;
+  --section-margin: 2rem;
 
-	@media only screen and (max-width: 768px) {
-		--flex-justify-content: center;
-		--name-margin: 1rem;
-		--section-margin: 1rem;
-		--watermark-opacity: 0;
-	}
+  @media only screen and (max-width: 768px) {
+    --flex-justify-content: center;
+    --name-margin: 1rem;
+    --section-margin: 1rem;
+  }
 }
 
 body {
-	/* Some industry standard */
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-	font-weight: 200;
+  /* Some industry standard */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 200;
 }
 
 a {
-	color: var(--text-color);
-	text-decoration: none;
+  color: var(--text-color);
+  text-decoration: none;
 
-	&:hover {
-		text-decoration: underline;
-	}
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .text-center {
-	text-align: center;
+  text-align: center;
 }
 
 .body-content {
-	display: grid;
-	grid-template-areas: "aside main";
-	margin: 0;
-	min-height: 100vh;
+  display: grid;
+  grid-template-areas: "aside main";
+  margin: 0;
+  min-height: 100vh;
 
-	@media only screen and (max-width: 768px) {
-		grid-template-areas: 
-			"aside"
-			"main";
-	}
+  @media only screen and (max-width: 768px) {
+    grid-template-areas:
+      "aside"
+      "main";
+  }
 
-	aside {
-		grid-area: aside;
-		background-color: var(--primary-background-aside);
-		color: var(--text-color-aside);
-		padding-left: 4rem;
-		padding-right: 4rem;
-		padding-top: 3rem;
+  aside {
+    grid-area: aside;
+    background-color: var(--primary-background-aside);
+    color: var(--text-color-aside);
+    padding-left: 4rem;
+    padding-right: 4rem;
+    padding-top: 3rem;
 
-		a {
-			color: var(--text-color-aside);
-		}
+    a {
+      color: var(--text-color-aside);
+    }
 
-		.avatar {
-			display: flex;
-			justify-content: center;
-			margin-bottom: 1rem;
+    .avatar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
 
-			img {
-				border-radius: 50%;
-				width: 100px;
-			}
-		}
+      img {
+        border-radius: 50%;
+        width: 100px;
+      }
+    }
 
-		.name {
-			margin-bottom: var(--name-margin);
-		}
+    .name {
+      margin-bottom: var(--name-margin);
+    }
 
-		.section {
-			margin-bottom: var(--section-margin);
-			display: flex;
-			align-items: var(--flex-justify-content);
-			flex-direction: column;
+    .section {
+      margin-bottom: var(--section-margin);
+      display: flex;
+      align-items: var(--flex-justify-content);
+      flex-direction: column;
 
-			.items {
-				display: flex;
-				flex-direction: column;
-				justify-content: left;
-				align-items: var(--flex-justify-content);
-				gap: 0.75rem;
-			}
-		}
-	}
+      .items {
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        align-items: var(--flex-justify-content);
+        gap: 0.75rem;
+      }
+    }
+  }
 
-	main {
-		grid-area: main;
-		background-color: var(--primary-background);
-		color: var(--text-color);
-		padding-left: 3rem;
-		padding-right: 3rem;
-		padding-top: 3rem;
-		position: relative;
+  main {
+    grid-area: main;
+    background-color: var(--primary-background);
+    color: var(--text-color);
+    padding-left: 3rem;
+    padding-right: 3rem;
+    padding-top: 3rem;
+    position: relative;
 
-		.watermark {
-			position: fixed;
-			font-size: 17vmin;
-			color: var(--watermark-color);
-			font-family: "Abril FatFace";
-			font-weight: 900;
-			letter-spacing: -0.3rem;
-			white-space: nowrap;
-			user-select: none;
-			bottom: 5vmin;
-			opacity: var(--watermark-opacity);
-		}
-
-		.lang-logo {
-			width: 0.75em;
-			filter: grayscale(75%);
-		}
-	}
+    .lang-logo {
+      width: 0.75em;
+      filter: grayscale(75%);
+    }
+  }
 }
