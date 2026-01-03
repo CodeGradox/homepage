@@ -102,7 +102,6 @@ a {
 
     .lang-logo {
       width: 0.75em;
-      filter: grayscale(75%);
     }
   }
 }
