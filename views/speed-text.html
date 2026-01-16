@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="Speed Text Reader - Read text faster one word at a time">
+		<title>Speed Text Reader</title>
+		<link rel="stylesheet" href="/assets/style.css">
+		<style>
+			.speed-reader {
+				display: flex;
+				flex-direction: column;
+				gap: 1.5rem;
+				height: 100%;
+			}
+
+			.input-section {
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
+			}
+
+			.input-section textarea {
+				width: 100%;
+				min-height: 150px;
+				padding: 0.75rem;
+				border: 1px solid light-dark(#ccc, #444);
+				border-radius: 4px;
+				font-family: inherit;
+				font-size: 1rem;
+				resize: vertical;
+				background: light-dark(#fff, #1a1a1a);
+				color: inherit;
+			}
+
+			.input-section textarea:focus {
+				outline: 2px solid light-dark(#0066cc, #4da6ff);
+				outline-offset: -2px;
+			}
+
+			.controls {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 1rem;
+				align-items: center;
+			}
+
+			.speed-control {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+
+			.speed-control input[type="range"] {
+				width: 150px;
+			}
+
+			.speed-control .wpm-value {
+				min-width: 4rem;
+				font-variant-numeric: tabular-nums;
+			}
+
+			.btn {
+				padding: 0.5rem 1rem;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 1rem;
+				background: light-dark(#0066cc, #4da6ff);
+				color: white;
+				transition: background 0.2s;
+				min-width: 6rem;
+			}
+
+			.btn:hover {
+				background: light-dark(#0052a3, #3d8ae6);
+			}
+
+			.btn:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+
+			.display-section {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				min-height: 200px;
+				border: 1px solid light-dark(#ddd, #333);
+				border-radius: 8px;
+				background: light-dark(#fafafa, #111);
+				position: relative;
+			}
+
+			.word-display {
+				font-size: 3rem;
+				font-family: monospace;
+				letter-spacing: 0.05em;
+				user-select: none;
+			}
+
+			.word-display .before {
+				color: inherit;
+			}
+
+			.word-display .focus {
+				color: #e63946;
+			}
+
+			.word-display .after {
+				color: inherit;
+			}
+
+			.focus-line {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				width: 2px;
+				background: light-dark(#ccc, #444);
+				left: 50%;
+				transform: translateX(-50%);
+				pointer-events: none;
+			}
+
+			.progress-info {
+				margin-top: 1rem;
+				font-size: 0.9rem;
+				color: light-dark(#666, #999);
+			}
+
+			.status {
+				font-size: 0.9rem;
+				padding: 0.25rem 0.5rem;
+				border-radius: 4px;
+				background: light-dark(#f0f0f0, #222);
+				min-width: 6rem;
+				text-align: center;
+			}
+
+			.status.playing {
+				background: light-dark(#d4edda, #1a3d2e);
+				color: light-dark(#155724, #98d4a8);
+			}
+
+			.status.paused {
+				background: light-dark(#fff3cd, #3d3520);
+				color: light-dark(#856404, #e6c86a);
+			}
+
+			.keyboard-help {
+				font-size: 0.85rem;
+				color: light-dark(#666, #999);
+				margin-top: 1rem;
+			}
+
+			.keyboard-help kbd {
+				display: inline-block;
+				padding: 0.15rem 0.4rem;
+				font-family: monospace;
+				background: light-dark(#eee, #333);
+				border: 1px solid light-dark(#ccc, #555);
+				border-radius: 3px;
+				font-size: 0.8rem;
+			}
+
+			@media (max-width: 768px) {
+				.word-display {
+					font-size: 2rem;
+				}
+			}
+		</style>
+	</head>
+	<body class="body-content">
+		<aside>
+			<div class="name">
+				<h1 class="text-center">Speed Reader</h1>
+				<p class="text-center">Read text faster</p>
+			</div>
+
+			<div class="section">
+				<h2>Instructions</h2>
+				<div class="items">
+					<span>1. Paste your text</span>
+					<span>2. Set your speed (WPM)</span>
+					<span>3. Click Start</span>
+				</div>
+			</div>
+
+			<div class="section">
+				<h2>Controls</h2>
+				<div class="items">
+					<span><kbd>Space</kbd> Pause/Resume</span>
+					<span><kbd>&larr;</kbd> Previous word</span>
+					<span><kbd>&rarr;</kbd> Next word</span>
+				</div>
+			</div>
+
+			<div class="section">
+				<h2>Navigation</h2>
+				<div class="items">
+					<a href="/">Back to Home</a>
+				</div>
+			</div>
+		</aside>
+		<main>
+			<div class="speed-reader">
+				<div class="input-section">
+					<label for="text-input"><strong>Paste your text:</strong></label>
+					<textarea id="text-input" placeholder="Paste the text you want to read here...">At the end of last year, AI agents really came alive for me. Partly because the models got better, but more so because we gave them the tools to take their capacity beyond pure reasoning. Now coding agents are controlling the terminal, running tests to validate their work, searching the web for documentation, and using web services with skills we taught them in plain English. Reality is fast catching the hype!</textarea>
+				</div>
+
+				<div class="controls">
+					<div class="speed-control">
+						<label for="wpm-slider">Speed:</label>
+						<input type="range" id="wpm-slider" min="100" max="800" value="300" step="5">
+						<span class="wpm-value"><span id="wpm-display">300</span> WPM</span>
+					</div>
+					<button id="start-btn" class="btn">Start</button>
+					<button id="reset-btn" class="btn">Reset</button>
+					<span id="status" class="status">Ready</span>
+				</div>
+
+				<div class="display-section">
+						<div class="word-display" id="word-display">
+						<span class="before"></span><span class="focus"></span><span class="after"></span>
+					</div>
+					<div class="progress-info">
+						<span id="progress">0 / 0 words</span>
+					</div>
+				</div>
+
+				<div class="keyboard-help">
+					<kbd>Space</kbd> Pause/Resume &nbsp;
+					<kbd>&larr;</kbd> Previous &nbsp;
+					<kbd>&rarr;</kbd> Next
+				</div>
+			</div>
+		</main>
+
+		<script>
+			(function() {
+				// DOM elements
+				const textInput = document.getElementById('text-input');
+				const wpmSlider = document.getElementById('wpm-slider');
+				const wpmDisplay = document.getElementById('wpm-display');
+				const startBtn = document.getElementById('start-btn');
+				const resetBtn = document.getElementById('reset-btn');
+				const wordDisplay = document.getElementById('word-display');
+				const progressEl = document.getElementById('progress');
+				const statusEl = document.getElementById('status');
+
+				// State
+				let words = [];
+				let currentIndex = 0;
+				let isPlaying = false;
+				let intervalId = null;
+
+				// Calculate the optimal recognition point (ORP) - approximately middle of word
+				function getORP(word) {
+					const len = word.length;
+					if (len <= 1) return 0;
+					if (len <= 3) return 1;
+					// For longer words, aim for roughly the middle, slightly left of center
+					return Math.floor((len - 1) / 2);
+				}
+
+				// Display a word with the focus letter highlighted using safe DOM methods
+				function displayWord(word) {
+					// Clear existing content
+					while (wordDisplay.firstChild) {
+						wordDisplay.removeChild(wordDisplay.firstChild);
+					}
+
+					// Create span elements
+					const beforeSpan = document.createElement('span');
+					beforeSpan.className = 'before';
+
+					const focusSpan = document.createElement('span');
+					focusSpan.className = 'focus';
+
+					const afterSpan = document.createElement('span');
+					afterSpan.className = 'after';
+
+					if (word) {
+						const orpIndex = getORP(word);
+						const before = word.slice(0, orpIndex);
+						const focus = word[orpIndex];
+						const after = word.slice(orpIndex + 1);
+
+						// Calculate padding to center the focus letter
+						const maxPadding = 10;
+						const beforePadding = maxPadding - before.length;
+						const afterPadding = maxPadding - after.length;
+						const paddedBefore = '\u00A0'.repeat(Math.max(0, beforePadding)) + before;
+						const paddedAfter = after + '\u00A0'.repeat(Math.max(0, afterPadding));
+
+						beforeSpan.textContent = paddedBefore;
+						focusSpan.textContent = focus;
+						afterSpan.textContent = paddedAfter;
+					}
+
+					wordDisplay.appendChild(beforeSpan);
+					wordDisplay.appendChild(focusSpan);
+					wordDisplay.appendChild(afterSpan);
+				}
+
+				// Update progress display
+				function updateProgress() {
+					progressEl.textContent = currentIndex + ' / ' + words.length + ' words';
+				}
+
+				// Update status display
+				function updateStatus(text, className) {
+					statusEl.textContent = text;
+					statusEl.className = 'status ' + (className || '');
+				}
+
+				// Calculate interval from WPM
+				function getInterval() {
+					const wpm = parseInt(wpmSlider.value, 10);
+					return Math.round(60000 / wpm);
+				}
+
+				// Show next word
+				function showNextWord() {
+					if (currentIndex >= words.length) {
+						pause();
+						updateStatus('Finished', '');
+						startBtn.textContent = 'Restart';
+						return;
+					}
+
+					displayWord(words[currentIndex]);
+					currentIndex++;
+					updateProgress();
+				}
+
+				// Start playing
+				function play() {
+					if (words.length === 0) return;
+
+					isPlaying = true;
+					updateStatus('Playing', 'playing');
+					startBtn.textContent = 'Pause';
+
+					// Show first word immediately
+					showNextWord();
+
+					// Set interval for subsequent words
+					intervalId = setInterval(showNextWord, getInterval());
+				}
+
+				// Pause
+				function pause() {
+					isPlaying = false;
+					updateStatus('Paused', 'paused');
+					startBtn.textContent = 'Resume';
+
+					if (intervalId) {
+						clearInterval(intervalId);
+						intervalId = null;
+					}
+				}
+
+				// Toggle play/pause
+				function togglePlayPause() {
+					if (words.length === 0) {
+						initializeReader();
+						if (words.length === 0) return;
+					}
+
+					if (currentIndex >= words.length) {
+						// Restart from beginning
+						currentIndex = 0;
+						play();
+					} else if (isPlaying) {
+						pause();
+					} else {
+						play();
+					}
+				}
+
+				// Go to previous word
+				function previousWord() {
+					if (words.length === 0) return;
+
+					// If playing, pause first
+					if (isPlaying) {
+						pause();
+					}
+
+					// Go back (currentIndex is already pointing to next word)
+					currentIndex = Math.max(0, currentIndex - 2);
+					displayWord(words[currentIndex]);
+					currentIndex++;
+					updateProgress();
+				}
+
+				// Go to next word
+				function nextWord() {
+					if (words.length === 0) return;
+
+					// If playing, pause first
+					if (isPlaying) {
+						pause();
+					}
+
+					if (currentIndex < words.length) {
+						displayWord(words[currentIndex]);
+						currentIndex++;
+						updateProgress();
+					}
+				}
+
+				// Initialize reader with current text
+				function initializeReader() {
+					const text = textInput.value.trim();
+					if (!text) {
+						alert('Please enter some text first.');
+						return;
+					}
+
+					// Split text into words, filtering out empty strings
+					words = text.split(/\s+/).filter(function(w) { return w.length > 0; });
+					currentIndex = 0;
+
+					updateProgress();
+					displayWord('');
+					updateStatus('Ready', '');
+					startBtn.textContent = 'Start';
+				}
+
+				// Reset everything
+				function reset() {
+					pause();
+					words = [];
+					currentIndex = 0;
+					displayWord('');
+					updateProgress();
+					updateStatus('Ready', '');
+					startBtn.textContent = 'Start';
+				}
+
+				// Event listeners
+				wpmSlider.addEventListener('input', function() {
+					wpmDisplay.textContent = wpmSlider.value;
+
+					// If playing, restart interval with new speed
+					if (isPlaying) {
+						clearInterval(intervalId);
+						intervalId = setInterval(showNextWord, getInterval());
+					}
+				});
+
+				startBtn.addEventListener('click', function() {
+					if (words.length === 0) {
+						initializeReader();
+						if (words.length > 0) {
+							play();
+						}
+					} else {
+						togglePlayPause();
+					}
+				});
+
+				resetBtn.addEventListener('click', reset);
+
+				// Keyboard controls
+				document.addEventListener('keydown', function(e) {
+					// Don't capture keys when typing in textarea
+					if (document.activeElement === textInput) return;
+
+					switch (e.code) {
+						case 'Space':
+							e.preventDefault();
+							togglePlayPause();
+							break;
+						case 'ArrowLeft':
+							e.preventDefault();
+							previousWord();
+							break;
+						case 'ArrowRight':
+							e.preventDefault();
+							nextWord();
+							break;
+						case 'ArrowUp':
+							e.preventDefault();
+							wpmSlider.value = Math.min(800, parseInt(wpmSlider.value, 10) + 5);
+							wpmSlider.dispatchEvent(new Event('input'));
+							break;
+						case 'ArrowDown':
+							e.preventDefault();
+							wpmSlider.value = Math.max(100, parseInt(wpmSlider.value, 10) - 5);
+							wpmSlider.dispatchEvent(new Event('input'));
+							break;
+					}
+				});
+
+				// Initialize
+				displayWord('');
+				updateProgress();
+			})();
+		</script>
+	</body>
+</html>

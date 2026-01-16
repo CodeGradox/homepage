@@ -39,6 +39,11 @@ func main() {
 		w.Write([]byte("OK"))
 	})
 
+	// Speed text reader page
+	router.HandleFunc("GET /speed-text", func(w http.ResponseWriter, r *http.Request) {
+		templates.ExecuteTemplate(w, "speed-text.html", nil)
+	})
+
 	// Homepage and catch-all.
 	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		templates.ExecuteTemplate(w, "index.html", nil)

@@ -7,8 +7,8 @@
   --primary-background-aside: light-dark(#dfe3ff, #313441);
 
   --flex-justify-content: left;
-  --name-margin: 3rem;
-  --section-margin: 2rem;
+  --name-margin: 2rem;
+  --section-margin: 1.25rem;
 
   @media only screen and (max-width: 768px) {
     --flex-justify-content: center;
@@ -39,6 +39,7 @@ a {
 .body-content {
   display: grid;
   grid-template-areas: "aside main";
+  grid-template-columns: auto 1fr;
   margin: 0;
   min-height: 100vh;
 
@@ -86,7 +87,7 @@ a {
         flex-direction: column;
         justify-content: left;
         align-items: var(--flex-justify-content);
-        gap: 0.75rem;
+        gap: 0.5rem;
       }
     }
   }
@@ -99,6 +100,7 @@ a {
     padding-right: 3rem;
     padding-top: 3rem;
     position: relative;
+    overflow-x: hidden;
 
     .lang-logo {
       width: 0.75em;
