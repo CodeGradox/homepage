@@ -29,6 +29,8 @@
 					<span><kbd>Space</kbd> Pause/Resume</span>
 					<span><kbd>&larr;</kbd> Previous word</span>
 					<span><kbd>&rarr;</kbd> Next word</span>
+					<span><kbd>&uarr;</kbd> Speed up</span>
+					<span><kbd>&darr;</kbd> Slow down</span>
 				</div>
 			</div>
 
@@ -44,6 +46,7 @@
 				<div class="input-section">
 					<label for="text-input"><strong>Paste your text:</strong></label>
 					<textarea id="text-input" placeholder="Paste the text you want to read here..."></textarea>
+					<span id="time-estimate"></span>
 				</div>
 
 				<div class="controls">
@@ -65,12 +68,6 @@
 						<span id="progress">0 / 0 words</span>
 					</div>
 				</div>
-
-				<div class="keyboard-help">
-					<kbd>Space</kbd> Pause/Resume &nbsp;
-					<kbd>&larr;</kbd> Previous &nbsp;
-					<kbd>&rarr;</kbd> Next
-				</div>
 			</div>
 		</main>
 
@@ -84,6 +81,7 @@
 				const resetBtn = document.getElementById('reset-btn');
 				const wordDisplay = document.getElementById('word-display');
 				const progressEl = document.getElementById('progress');
+				const timeEstimateEl = document.getElementById('time-estimate');
 				const statusEl = document.getElementById('status');
 
 				// State
@@ -144,6 +142,25 @@
 				// Update progress display
 				function updateProgress() {
 					progressEl.textContent = currentIndex + ' / ' + words.length + ' words';
+				}
+
+				// Update time estimate display
+				function updateTimeEstimate() {
+					const text = textInput.value.trim();
+					const wordCount = text ? text.split(/\s+/).filter(function(w) { return w.length > 0; }).length : 0;
+					if (wordCount === 0) {
+						timeEstimateEl.textContent = '';
+						return;
+					}
+					const wpm = parseInt(wpmSlider.value, 10);
+					const totalSeconds = Math.ceil((wordCount / wpm) * 60);
+					const minutes = Math.floor(totalSeconds / 60);
+					const seconds = totalSeconds % 60;
+					if (minutes > 0) {
+						timeEstimateEl.textContent = wordCount + ' words \u2022 ' + minutes + 'm ' + seconds + 's at ' + wpm + ' WPM';
+					} else {
+						timeEstimateEl.textContent = wordCount + ' words \u2022 ' + seconds + 's at ' + wpm + ' WPM';
+					}
 				}
 
 				// Update status display
@@ -281,6 +298,7 @@
 				// Event listeners
 				wpmSlider.addEventListener('input', function() {
 					wpmDisplay.textContent = wpmSlider.value;
+					updateTimeEstimate();
 
 					// If playing, restart interval with new speed
 					if (isPlaying) {
@@ -333,9 +351,13 @@
 					}
 				});
 
+				// Update estimate when textarea changes
+				textInput.addEventListener('input', updateTimeEstimate);
+
 				// Initialize
 				displayWord('');
 				updateProgress();
+				updateTimeEstimate();
 			})();
 		</script>
 	</body>

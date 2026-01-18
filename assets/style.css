@@ -205,12 +205,11 @@ a {
 }
 
 .speed-reader .display-section {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
+  min-height: 120px;
   border: 1px solid var(--color-base-300);
   border-radius: 8px;
   background: var(--color-base-200);
@@ -270,22 +269,6 @@ a {
 .speed-reader .status.paused {
   background: var(--color-warning);
   color: var(--color-warning-content);
-}
-
-.speed-reader .keyboard-help {
-  font-size: 0.85rem;
-  opacity: 0.6;
-  margin-top: 1rem;
-}
-
-.speed-reader .keyboard-help kbd {
-  display: inline-block;
-  padding: 0.15rem 0.4rem;
-  font-family: monospace;
-  background: var(--color-base-200);
-  border: 1px solid var(--color-base-300);
-  border-radius: 3px;
-  font-size: 0.8rem;
 }
 
 @media (max-width: 768px) {
