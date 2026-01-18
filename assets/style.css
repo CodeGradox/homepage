@@ -1,11 +1,31 @@
 :root {
   color-scheme: light dark;
-  --text-color: light-dark(#060606, #f9f9f9);
-  --primary-background: light-dark(#f9f9f9, #1a1a1a);
 
-  --text-color-aside: light-dark(#3d3434, #f9f9f9);
-  --primary-background-aside: light-dark(#dfe3ff, #313441);
+  /* DaisyUI color scheme */
+  --color-base-100: light-dark(#f9f9f9, #1a1a1a);
+  --color-base-200: light-dark(#f0f0f0, #222222);
+  --color-base-300: light-dark(#cccccc, #444444);
+  --color-base-content: light-dark(#060606, #f9f9f9);
 
+  --color-primary: light-dark(#dfe3ff, #313441);
+  --color-primary-content: light-dark(#3d3434, #f9f9f9);
+
+  --color-accent: light-dark(#0066cc, #4da6ff);
+  --color-accent-content: light-dark(#ffffff, #ffffff);
+
+  --color-error: light-dark(#e63946, #e63946);
+  --color-error-content: light-dark(#ffffff, #ffffff);
+
+  --color-success: light-dark(#d4edda, #1a3d2e);
+  --color-success-content: light-dark(#155724, #98d4a8);
+
+  --color-warning: light-dark(#fff3cd, #3d3520);
+  --color-warning-content: light-dark(#856404, #e6c86a);
+
+  --color-info: light-dark(#cce5ff, #1a3a5c);
+  --color-info-content: light-dark(#004085, #99c2ff);
+
+  /* Layout variables */
   --flex-justify-content: left;
   --name-margin: 2rem;
   --section-margin: 1.25rem;
@@ -24,7 +44,7 @@ body {
 }
 
 a {
-  color: var(--text-color);
+  color: var(--color-base-content);
   text-decoration: none;
 
   &:hover {
@@ -39,11 +59,12 @@ a {
 .body-content {
   display: grid;
   grid-template-areas: "aside main";
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 350px 1fr;
   margin: 0;
   min-height: 100vh;
 
   @media only screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
     grid-template-areas:
       "aside"
       "main";
@@ -51,14 +72,14 @@ a {
 
   aside {
     grid-area: aside;
-    background-color: var(--primary-background-aside);
-    color: var(--text-color-aside);
+    background-color: var(--color-primary);
+    color: var(--color-primary-content);
     padding-left: 4rem;
     padding-right: 4rem;
     padding-top: 3rem;
 
     a {
-      color: var(--text-color-aside);
+      color: var(--color-primary-content);
     }
 
     .avatar {
@@ -94,8 +115,8 @@ a {
 
   main {
     grid-area: main;
-    background-color: var(--primary-background);
-    color: var(--text-color);
+    background-color: var(--color-base-100);
+    color: var(--color-base-content);
     padding-left: 3rem;
     padding-right: 3rem;
     padding-top: 3rem;
@@ -126,17 +147,17 @@ a {
   width: 100%;
   min-height: 150px;
   padding: 0.75rem;
-  border: 1px solid light-dark(#ccc, #444);
+  border: 1px solid var(--color-base-300);
   border-radius: 4px;
   font-family: inherit;
   font-size: 1rem;
   resize: vertical;
-  background: light-dark(#fff, #1a1a1a);
+  background: var(--color-base-100);
   color: inherit;
 }
 
 .speed-reader .input-section textarea:focus {
-  outline: 2px solid light-dark(#0066cc, #4da6ff);
+  outline: 2px solid var(--color-accent);
   outline-offset: -2px;
 }
 
@@ -168,14 +189,14 @@ a {
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
-  background: light-dark(#0066cc, #4da6ff);
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-accent-content);
   transition: background 0.2s;
   min-width: 6rem;
 }
 
 .speed-reader .btn:hover {
-  background: light-dark(#0052a3, #3d8ae6);
+  filter: brightness(0.85);
 }
 
 .speed-reader .btn:disabled {
@@ -190,9 +211,9 @@ a {
   align-items: center;
   justify-content: center;
   min-height: 200px;
-  border: 1px solid light-dark(#ddd, #333);
+  border: 1px solid var(--color-base-300);
   border-radius: 8px;
-  background: light-dark(#fafafa, #111);
+  background: var(--color-base-200);
   position: relative;
 }
 
@@ -208,7 +229,7 @@ a {
 }
 
 .speed-reader .word-display .focus {
-  color: #e63946;
+  color: var(--color-error);
 }
 
 .speed-reader .word-display .after {
@@ -220,7 +241,7 @@ a {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: light-dark(#ccc, #444);
+  background: var(--color-base-300);
   left: 50%;
   transform: translateX(-50%);
   pointer-events: none;
@@ -229,31 +250,31 @@ a {
 .speed-reader .progress-info {
   margin-top: 1rem;
   font-size: 0.9rem;
-  color: light-dark(#666, #999);
+  opacity: 0.6;
 }
 
 .speed-reader .status {
   font-size: 0.9rem;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  background: light-dark(#f0f0f0, #222);
+  background: var(--color-base-200);
   min-width: 6rem;
   text-align: center;
 }
 
 .speed-reader .status.playing {
-  background: light-dark(#d4edda, #1a3d2e);
-  color: light-dark(#155724, #98d4a8);
+  background: var(--color-success);
+  color: var(--color-success-content);
 }
 
 .speed-reader .status.paused {
-  background: light-dark(#fff3cd, #3d3520);
-  color: light-dark(#856404, #e6c86a);
+  background: var(--color-warning);
+  color: var(--color-warning-content);
 }
 
 .speed-reader .keyboard-help {
   font-size: 0.85rem;
-  color: light-dark(#666, #999);
+  opacity: 0.6;
   margin-top: 1rem;
 }
 
@@ -261,8 +282,8 @@ a {
   display: inline-block;
   padding: 0.15rem 0.4rem;
   font-family: monospace;
-  background: light-dark(#eee, #333);
-  border: 1px solid light-dark(#ccc, #555);
+  background: var(--color-base-200);
+  border: 1px solid var(--color-base-300);
   border-radius: 3px;
   font-size: 0.8rem;
 }
