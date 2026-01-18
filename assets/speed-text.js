@@ -224,6 +224,7 @@
 	// Event listeners
 	wpmSlider.addEventListener('input', function() {
 		wpmDisplay.textContent = wpmSlider.value;
+		localStorage.setItem('speed-reader-wpm', wpmSlider.value);
 		updateTimeEstimate();
 
 		// If playing, restart interval with new speed
@@ -281,6 +282,11 @@
 	textInput.addEventListener('input', updateTimeEstimate);
 
 	// Initialize
+	const savedWpm = localStorage.getItem('speed-reader-wpm');
+	if (savedWpm) {
+		wpmSlider.value = savedWpm;
+		wpmDisplay.textContent = savedWpm;
+	}
 	displayWord('');
 	updateProgress();
 	updateTimeEstimate();
