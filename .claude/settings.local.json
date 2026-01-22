@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:localhost)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__click",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page",
+      "Bash(git -C /Users/magnus/projects/homepage log --oneline -10)",
+      "Bash(git -C /Users/magnus/projects/homepage show 29b7b53 --stat)",
+      "WebFetch(domain:daisyui.com)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(sips:*)",
+      "Bash(vips:*)",
+      "Bash(ruby --version:*)",
+      "Bash(gem list:*)",
+      "Bash(rbenv versions:*)",
+      "Bash(rbenv local:*)",
+      "Bash(gem install:*)",
+      "Bash(rails new:*)",
+      "Bash(bin/rails generate:*)",
+      "Bash(/Users/magnus/projects/homepage/homepage-rails/bin/rails generate:*)",
+      "Bash(/Users/magnus/projects/homepage/homepage-rails/bin/rails routes:*)",
+      "Bash(/Users/magnus/projects/homepage/homepage-rails/bin/rails server:*)",
+      "Bash(curl:*)",
+      "Bash(bundle exec rails server:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill -9)",
+      "Bash(bundle install:*)",
+      "Bash(bin/rails routes:*)"
+    ]
+  }
+}

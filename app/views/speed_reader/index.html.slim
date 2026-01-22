@@ -1,0 +1,78 @@
+- content_for :title, "Speed Reader"
+- content_for :description, "Speed Text Reader - Read text faster one word at a time"
+
+aside
+  .header-label Tool · 02
+  .name
+    h1 Speed Reader
+    p Rapid Serial Visual Presentation
+
+  .section
+    h2 Instructions
+    .items
+      span 1. Paste your text
+      span 2. Set your speed (WPM)
+      span 3. Click Start
+
+  .section
+    h2 Controls
+    .items
+      span
+        kbd Space
+        |  Pause/Resume
+      span
+        kbd &larr;
+        |  Previous word
+      span
+        kbd &rarr;
+        |  Next word
+      span
+        kbd &uarr;
+        |  Speed up
+      span
+        kbd &darr;
+        |  Slow down
+
+  .section
+    h2 Navigation
+    .items
+      = link_to "Back to Home", root_path
+
+  .section-code No. 990-22-2.0
+
+main data-controller="speed-reader" data-action="keydown@document->speed-reader#keydown"
+  .page-header
+    .page-title
+      h1
+        | Speed
+        br
+        | Reader
+      .subtitle RSVP Text Processing
+    .page-code
+      div Module
+      div 02
+
+  .speed-reader
+    .input-section
+      label for="text-input" Input Text
+      textarea#text-input data-speed-reader-target="textInput" data-action="input->speed-reader#textChanged" placeholder="Paste the text you want to read here..."
+      span data-speed-reader-target="timeEstimate"
+
+    .controls
+      .speed-control
+        label for="wpm-slider" Speed
+        input#wpm-slider data-speed-reader-target="wpmSlider" data-action="input->speed-reader#updateWpm" type="range" min="100" max="800" value="300" step="5"
+        span.wpm-value
+          span data-speed-reader-target="wpmDisplay" 300
+          |  WPM
+      button.btn data-speed-reader-target="startBtn" data-action="click->speed-reader#start" Start
+      button.btn data-speed-reader-target="resetBtn" data-action="click->speed-reader#reset" Reset
+      span.status data-speed-reader-target="status" Ready
+
+    .display-section
+      .word-display data-speed-reader-target="wordDisplay"
+        span.before
+        span.focus
+        span.after
+      .progress-info
+        span data-speed-reader-target="progress" 0 / 0 words
