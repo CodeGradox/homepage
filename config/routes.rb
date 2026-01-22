@@ -12,5 +12,5 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "homepage#index"
 
-  get "speed_text", to: "speed_reader#index"
+  get "speed_reader", to: "speed_reader#index"
 end

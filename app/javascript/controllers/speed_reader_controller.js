@@ -24,6 +24,11 @@ export default class extends Controller {
     this.pause()
   }
 
+  // Strip punctuation from word
+  stripPunctuation(word) {
+    return word.replace(/[.,\-;:!?'"()[\]{}]/g, '')
+  }
+
   // Calculate the optimal recognition point (ORP) - approximately middle of word
   getORP(word) {
     const len = word.length
@@ -50,6 +55,8 @@ export default class extends Controller {
     afterSpan.className = 'after'
 
     if (word) {
+      word = this.stripPunctuation(word)
+      if (!word) return
       const orpIndex = this.getORP(word)
       const before = word.slice(0, orpIndex)
       const focus = word[orpIndex]
