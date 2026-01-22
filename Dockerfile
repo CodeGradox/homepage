@@ -9,6 +9,7 @@ RUN apk add --no-cache tzdata procps
 WORKDIR /rails
 
 ENV RAILS_ENV="production" \
+  RUBY_YJIT_ENABLE="1" \
   BUNDLE_DEPLOYMENT="1" \
   BUNDLE_PATH="/usr/local/bundle" \
   BUNDLE_WITHOUT="development:test"
