@@ -4,14 +4,15 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="Speed Text Reader - Read text faster one word at a time">
-		<title>Speed Text Reader</title>
+		<title>Speed Reader</title>
 		<link rel="stylesheet" href="/assets/style.css">
 	</head>
 	<body class="body-content">
 		<aside>
+			<div class="header-label">Tool · 02</div>
 			<div class="name">
-				<h1 class="text-center">Speed Reader</h1>
-				<p class="text-center">Read text faster</p>
+				<h1>Speed Reader</h1>
+				<p>Rapid Serial Visual Presentation</p>
 			</div>
 
 			<div class="section">
@@ -40,18 +41,31 @@
 					<a href="/">Back to Home</a>
 				</div>
 			</div>
+
+			<div class="section-code">No. 990-22-2.0</div>
 		</aside>
 		<main>
+			<div class="page-header">
+				<div class="page-title">
+					<h1>Speed<br>Reader</h1>
+					<div class="subtitle">RSVP Text Processing</div>
+				</div>
+				<div class="page-code">
+					<div>Module</div>
+					<div>02</div>
+				</div>
+			</div>
+
 			<div class="speed-reader">
 				<div class="input-section">
-					<label for="text-input"><strong>Paste your text:</strong></label>
+					<label for="text-input">Input Text</label>
 					<textarea id="text-input" placeholder="Paste the text you want to read here..."></textarea>
 					<span id="time-estimate"></span>
 				</div>
 
 				<div class="controls">
 					<div class="speed-control">
-						<label for="wpm-slider">Speed:</label>
+						<label for="wpm-slider">Speed</label>
 						<input type="range" id="wpm-slider" min="100" max="800" value="300" step="5">
 						<span class="wpm-value"><span id="wpm-display">300</span> WPM</span>
 					</div>
@@ -61,7 +75,7 @@
 				</div>
 
 				<div class="display-section">
-						<div class="word-display" id="word-display">
+					<div class="word-display" id="word-display">
 						<span class="before"></span><span class="focus"></span><span class="after"></span>
 					</div>
 					<div class="progress-info">
