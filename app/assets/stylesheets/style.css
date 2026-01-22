@@ -1,26 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 
 :root {
-  /* Cream/amber old-computer color scheme */
-  --color-cream: #ebe6d5;
-  --color-cream-light: #f5f2e8;
-  --color-cream-dark: #dfd9c3;
-  --color-ink: #3d3929;
-  --color-ink-soft: #5c5647;
-  --color-ink-muted: #8a8475;
+  color-scheme: light dark;
 
-  /* Semantic colors */
-  --color-bg: var(--color-cream);
-  --color-bg-alt: var(--color-cream-light);
-  --color-bg-section: var(--color-cream-dark);
-  --color-text: var(--color-ink);
-  --color-text-soft: var(--color-ink-soft);
-  --color-text-muted: var(--color-ink-muted);
-  --color-border: var(--color-ink);
-  --color-border-soft: var(--color-ink-muted);
+  /* Semantic colors using light-dark() */
+  --color-bg: light-dark(#ebe6d5, #1a1a1a);
+  --color-bg-alt: light-dark(#f5f2e8, #242424);
+  --color-bg-section: light-dark(#dfd9c3, #121212);
+  --color-text: light-dark(#3d3929, #e8e4d9);
+  --color-text-soft: light-dark(#5c5647, #c4c0b5);
+  --color-text-muted: light-dark(#8a8475, #8a877d);
+  --color-border: light-dark(#3d3929, #8a877d);
+  --color-border-soft: light-dark(#8a8475, #4a4740);
 
-  --color-accent: #8b4513;
-  --color-accent-content: var(--color-cream);
+  --color-accent: light-dark(#8b4513, #d4915a);
+  --color-accent-content: light-dark(#ebe6d5, #1a1a1a);
 
   /* Typography */
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', monospace;
