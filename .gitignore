@@ -34,5 +34,7 @@
 /config/*.key
 
 # Claude Code
-/.claude
+/.claude/*
+!/.claude/settings.json
+!/.claude/hooks/
 
