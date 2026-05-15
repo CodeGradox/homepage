@@ -145,7 +145,8 @@ aside {
       gap: 0.5rem;
       font-size: 13px;
 
-      a, span {
+      a,
+      span {
         display: block;
       }
     }
@@ -279,6 +280,201 @@ main {
     height: 3px;
     background-color: var(--color-border-soft);
     border-radius: 50%;
+  }
+}
+
+/* Table Demo */
+.table-demo-page {
+  .table-demo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+
+    @media only screen and (max-width: 1100px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .demo-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .demo-card-header {
+    min-height: 4.75rem;
+
+    h2 {
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      margin: 0;
+      color: var(--color-text-soft);
+      font-size: 12px;
+    }
+  }
+
+  .table-shell {
+    border: var(--border-width) solid var(--color-border);
+    background: var(--color-bg-alt);
+  }
+
+  .table-scroll-viewport,
+  .table-shell-body-scroll {
+    overflow: auto;
+    scrollbar-gutter: stable both-edges;
+  }
+
+  .table-shell--fixed .table-scroll-viewport {
+    max-height: 460px;
+  }
+
+  .table-shell--observer {
+    position: relative;
+  }
+
+  .table-shell-observer-target {
+    position: relative;
+  }
+
+  .table-shell-sentinel {
+    height: 1px;
+    margin-bottom: -1px;
+  }
+
+  .table-shell-header-overlay {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    display: none;
+    overflow: hidden;
+    background: var(--color-bg-alt);
+    border-bottom: var(--border-width) solid var(--color-border);
+    grid-template-columns: max-content minmax(0, 1fr);
+  }
+
+  .table-shell-header-frozen {
+    position: relative;
+    z-index: 6;
+    overflow: hidden;
+    border-right: var(--border-width) solid var(--color-border-soft);
+    width: var(--frozen-column-width, auto);
+  }
+
+  .table-shell--observer.is-pinned .table-shell-header-overlay {
+    display: grid;
+  }
+
+  .table-shell-header-clip {
+    overflow: hidden;
+  }
+
+  .table-shell--observer .table-shell-body-scroll {
+    overflow-y: visible;
+    overflow-x: auto;
+  }
+
+  .table-shell--observer thead {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+  }
+
+  .table-shell--observer.is-pinned .table-shell-body-scroll thead {
+    visibility: hidden;
+    position: absolute;
+    inset: 0 auto auto 0;
+    pointer-events: none;
+  }
+
+  .data-table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .data-table th,
+  .data-table td {
+    min-width: 120px;
+    padding: 0.9rem 1rem;
+    text-align: left;
+    white-space: nowrap;
+    border-right: var(--border-width) solid var(--color-border-soft);
+    border-bottom: var(--border-width) solid var(--color-border-soft);
+    font-size: 12px;
+  }
+
+  .data-table th:last-child,
+  .data-table td:last-child {
+    border-right: none;
+  }
+
+  .data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--color-bg-section);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 10px;
+  }
+
+  .data-table thead th:first-child,
+  .data-table tbody td:first-child {
+    position: sticky;
+    left: 0;
+  }
+
+  .data-table thead th:first-child {
+    z-index: 5;
+    background: var(--color-bg-section);
+  }
+
+  .data-table tbody td:first-child {
+    z-index: 1;
+    background: var(--color-bg-alt);
+  }
+
+  .data-table tbody tr:nth-child(even) td {
+    background: color-mix(in srgb, var(--color-bg-alt) 85%, var(--color-bg-section) 15%);
+  }
+
+  .data-table tbody tr:nth-child(even) td:first-child {
+    background: color-mix(in srgb, var(--color-bg-alt) 85%, var(--color-bg-section) 15%);
+  }
+
+  .data-table--header-clone {
+    min-width: max-content;
+    table-layout: fixed;
+  }
+
+  .data-table--header-clone th {
+    position: static;
+    border-bottom: none;
+    background: var(--color-bg-section);
+  }
+
+  .data-table--header-scrollable {
+    min-width: max-content;
+    width: var(--scrollable-header-width, auto);
+  }
+
+  .action-cell {
+    text-align: right;
+  }
+
+  .table-action {
+    border: var(--border-width) solid var(--color-border);
+    background: transparent;
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.45rem 0.75rem;
+    cursor: pointer;
   }
 }
 

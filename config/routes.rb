@@ -13,4 +13,5 @@ Rails.application.routes.draw do
   root "homepage#index"
 
   get "speed_reader", to: "speed_reader#index"
+  get "scrollable_table_patterns", to: "scrollable_table_patterns#index"
 end
