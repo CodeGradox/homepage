@@ -1,51 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Run the site locally with live-reloading source. Defaults to port 3000.
+set -euo pipefail
+cd "$(dirname "$0")/.."
 
-# Starts the development environment using Overmind.
-#
-# Automatically finds a free port range so multiple projects can run
-# simultaneously. Scans port 3000, 3010, 3020, … up to 3100 and picks
-# the first available slot.
-#
-#   PORT                        -> Rails server (e.g. 3000, 3010, 3020)
-#   SHAKAPACKER_DEV_SERVER_PORT -> Webpacker    (e.g. 3001, 3011, 3021)
-#
-# Usage:
-#   bin/dev
-
-set -e
-
-# Prevent overmind from using values from .env
-export OVERMIND_SKIP_ENV=true
-# Set title to prevent socker name too long error caused by long folder names.
-export OVERMIND_TITLE="laft"
-
-offset=0
-max_offset=10
-
-while [ $offset -le $max_offset ]; do
-  port=$((3000 + offset * 10))
-  if ! lsof -iTCP:"$port" -sTCP:LISTEN -t > /dev/null 2>&1; then
-    break
-  fi
-  offset=$((offset + 1))
-done
-
-if [ $offset -gt $max_offset ]; then
-  echo "No available port found (tried 3000–3100)" >&2
-  exit 1
-fi
-
-export PORT=$port
-export SHAKAPACKER_DEV_SERVER_PORT=$((port + 1))
-export REDIS_URL="redis://localhost:6379/$offset"
-
-# Pin HOST_URL to whatever port we picked so URL helpers in every Procfile
-# process agree on the public-facing host:port. Overmind auto-increments PORT
-# per process (web=$PORT, sidekiq=$PORT+200, …), which would otherwise make
-# sidekiq-rendered URLs point at a port nothing's listening on.
-export HOST_URL="http://localhost:$PORT"
-
-echo "Rails will be available on port $PORT"
-echo "Redis DB: $offset"
-
-exec overmind start
+export PORT="${PORT:-3000}"
+echo "Starting homepage on http://localhost:${PORT}"
+exec go run .

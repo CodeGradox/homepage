@@ -1,6 +1,29 @@
-#!/usr/bin/env ruby
-require_relative "../config/boot"
-require "active_support/continuous_integration"
+#!/usr/bin/env bash
+# Run the full static-analysis suite locally — the same checks CI runs.
+#
+# The Go equivalents of the old Rails toolchain:
+#   gofmt + go vet   ~ rubocop      (formatting and correctness)
+#   staticcheck      ~ rubocop      (deeper static analysis)
+#   gosec            ~ brakeman     (security-focused static analysis)
+#   govulncheck      ~ bundler-audit (known CVEs in dependencies / stdlib)
+set -euo pipefail
+cd "$(dirname "$0")/.."
 
-CI = ActiveSupport::ContinuousIntegration
-require_relative "../config/ci.rb"
+run() { echo "==> $*"; "$@"; }
+
+echo "== gofmt =="
+unformatted="$(gofmt -l .)"
+if [ -n "$unformatted" ]; then
+  echo "These files need gofmt:"; echo "$unformatted"; exit 1
+fi
+
+run go vet ./...
+run go build ./...
+run go test ./...
+
+# The tools below are installed on demand if missing.
+run go run honnef.co/go/tools/cmd/staticcheck@latest ./...
+run go run github.com/securego/gosec/v2/cmd/gosec@latest -quiet ./...
+run go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+
+echo "All checks passed."

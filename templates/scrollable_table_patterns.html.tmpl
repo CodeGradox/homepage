@@ -1,0 +1,131 @@
+{{define "title"}}Scrollable Table Patterns{{end}}
+{{define "description"}}Two scrollable table patterns with fixed headers and frozen first columns{{end}}
+{{define "content"}}
+<aside>
+  <div class="header-label">Tool · 03</div>
+  <div class="name">
+    <h1>Scrollable Tables</h1>
+    <p>Fixed Headers × Frozen First Column</p>
+  </div>
+
+  <div class="section">
+    <h2>Notes</h2>
+    <div class="items">
+      <span>Left table uses a fixed max height with a native sticky header</span>
+      <span>Right table keeps its natural height and pins a cloned header on scroll</span>
+      <span>Both tables freeze the first column and scroll horizontally</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Navigation</h2>
+    <div class="items">
+      <a href="/">Back to Home</a>
+      <a href="/speed_reader">Speed Reader</a>
+    </div>
+  </div>
+
+  <div class="section-code">No. 990-22-3.0</div>
+</aside>
+
+<main class="table-demo-page">
+  <div class="page-header">
+    <div class="page-title">
+      <h1>Scrollable<br>Tables</h1>
+      <div class="subtitle">Fixed Headers · Frozen Columns · Overflow Scroll</div>
+    </div>
+    <div class="page-code">
+      <div>Module</div>
+      <div>03</div>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="intro-text">Two scrollable table patterns with fixed headers and a frozen first column. The left implementation uses a constrained viewport and native sticky positioning. The right implementation keeps the body at natural height while a cloned header pins on page scroll and stays aligned with horizontal movement.</p>
+  </div>
+
+  <div class="table-demo-grid">
+    <section class="demo-card">
+      <div class="demo-card-header">
+        <h2>Fixed height container</h2>
+        <p>The scroll area has a max height and uses native sticky positioning for both the header and the first column.</p>
+      </div>
+
+      <div class="table-shell table-shell--fixed">
+        <div class="table-scroll-viewport">
+          <table class="data-table">
+            <thead>
+              <tr>
+                {{range .Columns}}<th>{{.}}</th>{{end}}
+              </tr>
+            </thead>
+            <tbody>
+              {{range .Rows}}
+              <tr>
+                {{range .Cells}}<td>{{.}}</td>{{end}}
+                <td class="action-cell"><button class="table-action" type="button">{{.Action}}</button></td>
+              </tr>
+              {{end}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-card">
+      <div class="demo-card-header">
+        <h2>Natural height content</h2>
+        <p>The body keeps its natural height while a separate pinned header stays synced with horizontal scrolling and the first column remains frozen.</p>
+      </div>
+
+      <div class="table-shell table-shell--observer" data-controller="scrollable-table-patterns">
+        <div class="table-shell-header-overlay">
+          <div class="table-shell-header-frozen" data-scrollable-table-patterns-target="headerFrozen">
+            <table class="data-table data-table--header-clone" aria-hidden="true">
+              <thead>
+                <tr>
+                  <th>{{.HeaderFrozen}}</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div class="table-shell-header-clip" data-scrollable-table-patterns-target="headerScroll">
+            <table class="data-table data-table--header-clone data-table--header-scrollable" aria-hidden="true" data-scrollable-table-patterns-target="headerTable">
+              <thead>
+                <tr>
+                  {{range .HeaderScroll}}<th>{{.}}</th>{{end}}
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+        <div class="table-shell-observer-target">
+          <div class="table-shell-sentinel" data-scrollable-table-patterns-target="sentinel"></div>
+          <div class="table-shell-body-scroll" data-scrollable-table-patterns-target="bodyScroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  {{range .Columns}}<th>{{.}}</th>{{end}}
+                </tr>
+              </thead>
+              <tbody>
+                {{range .Rows}}
+                <tr>
+                  {{range .Cells}}<td>{{.}}</td>{{end}}
+                  <td class="action-cell"><button class="table-action" type="button">{{.Action}}</button></td>
+                </tr>
+                {{end}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="footer-line">
+    <span>UI Pattern Demo</span>
+    <span>03</span>
+  </div>
+</main>
+{{end}}

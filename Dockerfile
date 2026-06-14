@@ -1,47 +1,30 @@
 # syntax=docker/dockerfile:1
-# check=error=true
 
-ARG RUBY_VERSION=4.0.1
-FROM docker.io/library/ruby:$RUBY_VERSION-alpine AS base
+# Build stage: compile a static binary with all assets embedded.
+ARG GO_VERSION=1.26
+FROM golang:${GO_VERSION}-alpine AS build
 
-RUN apk add --no-cache tzdata procps
+WORKDIR /src
 
-WORKDIR /rails
-
-ENV RAILS_ENV="production" \
-  RUBY_YJIT_ENABLE="1" \
-  BUNDLE_DEPLOYMENT="1" \
-  BUNDLE_PATH="/usr/local/bundle" \
-  BUNDLE_WITHOUT="development:test"
-
-# Build stage
-FROM base AS build
-
-RUN apk add --no-cache build-base git yaml-dev tzdata
-
-COPY Gemfile Gemfile.lock ./
-
-RUN bundle install && \
-  rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-  bundle exec bootsnap precompile --gemfile
+# Download modules first so this layer caches independently of source changes.
+# (This project is stdlib-only, so it's essentially a no-op, but keeps the
+# build correct if dependencies are ever added.)
+COPY go.mod go.sum* ./
+RUN go mod download
 
 COPY . .
 
-RUN bundle exec bootsnap precompile app/ lib/ && \
-  SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile && \
-  rm -rf tmp/cache
+# CGO off so the binary is fully static and runs on a scratch/distroless base.
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /homepage .
 
-# Final stage
-FROM base
+# Final stage: a minimal, non-root image. distroless/static ships CA certs and a
+# nonroot user but nothing else — no shell, no package manager.
+FROM gcr.io/distroless/static-debian12:nonroot
 
-# Non-root user
-RUN addgroup -S rails && adduser -S rails -G rails
-
-COPY --from=build --chown=rails:rails "${BUNDLE_PATH}" "${BUNDLE_PATH}"
-COPY --from=build --chown=rails:rails /rails /rails
-
-USER rails:rails
+COPY --from=build /homepage /homepage
 
 EXPOSE 8080
-ENV HTTP_PORT=8080
-CMD ["./bin/thrust", "./bin/rails", "server"]
+ENV PORT=8080
+USER nonroot:nonroot
+
+ENTRYPOINT ["/homepage"]
