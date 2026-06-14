@@ -35,7 +35,9 @@ func TestPathInsertsDigestBeforeExtension(t *testing.T) {
 }
 
 func TestPathIsStableForSameContent(t *testing.T) {
-	if testPipeline(t).Path("stylesheets/style.css") != testPipeline(t).Path("stylesheets/style.css") {
+	first := testPipeline(t).Path("stylesheets/style.css")
+	second := testPipeline(t).Path("stylesheets/style.css")
+	if first != second {
 		t.Fatal("digest is not deterministic for identical content")
 	}
 }

@@ -80,6 +80,8 @@ func (m *Map) Tags() template.HTML {
 	b = append(b, `<script type="module">import "`...)
 	b = append(b, template.JSEscapeString(m.entrypoint)...)
 	b = append(b, `"</script>`...)
+	// #nosec G203 -- the map is built entirely from server-controlled asset
+	// paths and a constant entrypoint; there is no user input to escape.
 	return template.HTML(b)
 }
 
