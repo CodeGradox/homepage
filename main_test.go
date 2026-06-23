@@ -53,6 +53,7 @@ func TestPagesRender(t *testing.T) {
 		{"/", "<title>Magnus Åsrud</title>"},
 		{"/speed_reader", "<title>Speed Reader</title>"},
 		{"/scrollable_table_patterns", "AC-001"},
+		{"/wcag_contrast", "<title>WCAG Contrast Checker</title>"},
 	}
 	for _, c := range cases {
 		rec := httptest.NewRecorder()

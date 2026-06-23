@@ -1,0 +1,18 @@
+# air config for local live-reload (bin/dev). Rebuilds and restarts the server
+# when Go, template, or asset files change. Templates and assets are embedded
+# via //go:embed and read once at boot, so a rebuild is required for an edit to
+# show up — air just automates that. See https://github.com/air-verse/air.
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o ./tmp/main ."
+  entrypoint = ["./tmp/main"]
+  include_ext = ["go", "tmpl", "html", "css", "js"]
+  exclude_dir = ["tmp", ".git", ".github", ".claude", ".playwright-mcp"]
+  exclude_regex = ["_test\\.go"]
+  delay = 200
+  stop_on_error = true
+
+[misc]
+  clean_on_exit = true

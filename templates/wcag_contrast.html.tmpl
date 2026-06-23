@@ -1,0 +1,147 @@
+{{define "title"}}WCAG Contrast Checker{{end}}
+{{define "description"}}WCAG Contrast Checker - Check if two colors meet WCAG contrast requirements for text and icons{{end}}
+{{define "content"}}
+<aside>
+  <div class="header-label">Tool · 04</div>
+  <div class="name">
+    <h1>WCAG Contrast</h1>
+    <p>Color Accessibility Checker</p>
+  </div>
+
+  <div class="section">
+    <h2>Instructions</h2>
+    <div class="items">
+      <span>1. Pick a foreground color</span>
+      <span>2. Pick a background color</span>
+      <span>3. Read the compliance results</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Thresholds</h2>
+    <div class="items">
+      <span>Normal text · AA 4.5:1</span>
+      <span>Normal text · AAA 7:1</span>
+      <span>Large text · AA 3:1</span>
+      <span>Large text · AAA 4.5:1</span>
+      <span>UI &amp; graphics · 3:1</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Large Text</h2>
+    <div class="items">
+      <span>&ge; 24px regular</span>
+      <span>&ge; 18.66px bold</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Navigation</h2>
+    <div class="items">
+      <a href="/">Back to Home</a>
+    </div>
+  </div>
+
+  <div class="section-code">No. 990-22-4.0</div>
+</aside>
+
+<main data-controller="wcag-contrast">
+  <div class="page-header">
+    <div class="page-title">
+      <h1>Contrast<br>Checker</h1>
+      <div class="subtitle">WCAG 2 Color Contrast</div>
+    </div>
+    <div class="page-code">
+      <div>Module</div>
+      <div>04</div>
+    </div>
+  </div>
+
+  <div class="contrast-checker">
+    <div class="inputs">
+      <div class="color-field">
+        <label for="fg-hex">Foreground / Text</label>
+        <div class="field-row">
+          <input id="fg-color" type="color" value="#1a1a1a" data-wcag-contrast-target="fgColor" data-action="input->wcag-contrast#fgColorChanged" aria-label="Foreground color picker">
+          <input id="fg-hex" type="text" value="#1a1a1a" maxlength="7" spellcheck="false" autocomplete="off" data-wcag-contrast-target="fgHex" data-action="input->wcag-contrast#fgHexChanged">
+        </div>
+      </div>
+
+      <div class="color-field">
+        <label for="bg-hex">Background</label>
+        <div class="field-row">
+          <input id="bg-color" type="color" value="#ebe6d5" data-wcag-contrast-target="bgColor" data-action="input->wcag-contrast#bgColorChanged" aria-label="Background color picker">
+          <input id="bg-hex" type="text" value="#ebe6d5" maxlength="7" spellcheck="false" autocomplete="off" data-wcag-contrast-target="bgHex" data-action="input->wcag-contrast#bgHexChanged">
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" data-action="click->wcag-contrast#swap">Swap Colors</button>
+    </div>
+
+    <div class="preview" data-wcag-contrast-target="preview">
+      <div class="sample-heading">Readable headings carry the page</div>
+      <div class="sample-body">Body copy is where contrast matters most. This paragraph sits at 16px on your chosen background, so you can judge how an actual block of running text holds up before shipping it.</div>
+      <div class="sample-caption">Caption and helper text drops to 13px — the hardest size to keep legible.</div>
+      <div class="sample-icons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><path d="m9 11 3 3L22 4"></path></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+      </div>
+      <div class="sample-ui">
+        <button class="ui-btn-solid" type="button">Solid button</button>
+        <button class="ui-btn-outline" type="button">Outlined</button>
+        <a class="ui-link" href="#">A text link</a>
+      </div>
+    </div>
+
+    <div class="result">
+      <div class="ratio">
+        <span class="ratio-value" data-wcag-contrast-target="ratio">—</span>
+        <span class="ratio-label">Contrast Ratio</span>
+      </div>
+
+      <div class="checks">
+        <div class="check" data-wcag-contrast-target="check" data-threshold="4.5">
+          <div class="check-label">
+            <span class="check-name">Normal Text</span>
+            <span class="check-level">AA · 4.5:1</span>
+          </div>
+          <span class="check-badge">—</span>
+        </div>
+        <div class="check" data-wcag-contrast-target="check" data-threshold="7">
+          <div class="check-label">
+            <span class="check-name">Normal Text</span>
+            <span class="check-level">AAA · 7:1</span>
+          </div>
+          <span class="check-badge">—</span>
+        </div>
+        <div class="check" data-wcag-contrast-target="check" data-threshold="3">
+          <div class="check-label">
+            <span class="check-name">Large Text</span>
+            <span class="check-level">AA · 3:1</span>
+          </div>
+          <span class="check-badge">—</span>
+        </div>
+        <div class="check" data-wcag-contrast-target="check" data-threshold="4.5">
+          <div class="check-label">
+            <span class="check-name">Large Text</span>
+            <span class="check-level">AAA · 4.5:1</span>
+          </div>
+          <span class="check-badge">—</span>
+        </div>
+        <div class="check" data-wcag-contrast-target="check" data-threshold="3">
+          <div class="check-label">
+            <span class="check-name">UI &amp; Graphics</span>
+            <span class="check-level">Icons · 3:1</span>
+          </div>
+          <span class="check-badge">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{{end}}

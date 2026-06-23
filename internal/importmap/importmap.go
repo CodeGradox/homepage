@@ -46,6 +46,7 @@ func New(r resolver) *Map {
 			{"controllers/index", "javascript/controllers/index.js"},
 			{"controllers/speed_reader_controller", "javascript/controllers/speed_reader_controller.js"},
 			{"controllers/scrollable_table_patterns_controller", "javascript/controllers/scrollable_table_patterns_controller.js"},
+			{"controllers/wcag_contrast_controller", "javascript/controllers/wcag_contrast_controller.js"},
 		},
 	}
 }

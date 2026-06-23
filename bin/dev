@@ -5,4 +5,12 @@ cd "$(dirname "$0")/.."
 
 export PORT="${PORT:-3000}"
 echo "Starting homepage on http://localhost:${PORT}"
-exec go run .
+
+# Rebuild and restart on change (Go, templates, CSS, JS) via air. Falls back to
+# a plain run if air isn't installed: go install github.com/air-verse/air@latest
+if command -v air >/dev/null 2>&1; then
+  exec air
+else
+  echo "air not found — running without live-reload (go install github.com/air-verse/air@latest)"
+  exec go run .
+fi

@@ -10,6 +10,9 @@
 # Compiled binary — rebuilt inside the image.
 /homepage
 
+# air live-reload build output.
+/tmp/
+
 # CI service files.
 /.github
 

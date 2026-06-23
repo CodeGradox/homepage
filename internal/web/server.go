@@ -50,6 +50,7 @@ func (s *Server) Handler(publicFS fs.FS) http.Handler {
 	mux.HandleFunc("GET /{$}", s.home)
 	mux.HandleFunc("GET /speed_reader", s.speedReader)
 	mux.HandleFunc("GET /scrollable_table_patterns", s.scrollableTablePatterns)
+	mux.HandleFunc("GET /wcag_contrast", s.wcagContrast)
 
 	// Health check — returns 200 if the app is up. Matches Rails' /up.
 	mux.HandleFunc("GET /up", func(w http.ResponseWriter, _ *http.Request) {
@@ -73,4 +74,8 @@ func (s *Server) speedReader(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) scrollableTablePatterns(w http.ResponseWriter, r *http.Request) {
 	s.renderer.render(w, r, "scrollable_table_patterns", s.tables)
+}
+
+func (s *Server) wcagContrast(w http.ResponseWriter, r *http.Request) {
+	s.renderer.render(w, r, "wcag_contrast", nil)
 }

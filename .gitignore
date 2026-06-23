@@ -3,6 +3,9 @@
 # Compiled binary (this repo builds to ./homepage).
 /homepage
 
+# air live-reload build output (bin/dev).
+/tmp/
+
 # Test and coverage artifacts.
 *.test
 *.out
