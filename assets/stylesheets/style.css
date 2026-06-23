@@ -9,7 +9,7 @@
   --color-bg-section: light-dark(#dfd9c3, #121212);
   --color-text: light-dark(#3d3929, #e8e4d9);
   --color-text-soft: light-dark(#5c5647, #c4c0b5);
-  --color-text-muted: light-dark(#8a8475, #8a877d);
+  --color-text-muted: light-dark(#615d4d, #949187);
   --color-border: light-dark(#3d3929, #8a877d);
   --color-border-soft: light-dark(#8a8475, #4a4740);
 
@@ -47,6 +47,37 @@ a {
 
   &:hover {
     border-color: var(--color-border);
+  }
+}
+
+/* Visible keyboard focus (WCAG 2.4.7 / 2.4.11). Mouse focus stays ring-free. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip link — first tab stop, hidden until focused (WCAG 2.4.1). */
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: var(--border-width) solid var(--color-border);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  transform: translateY(-200%);
+  transition: transform 0.2s;
+
+  &:focus {
+    transform: translateY(0);
   }
 }
 
@@ -515,7 +546,6 @@ main {
       resize: vertical;
 
       &:focus {
-        outline: none;
         border-color: var(--color-text);
       }
     }
@@ -744,7 +774,6 @@ main {
     letter-spacing: 0.05em;
 
     &:focus {
-      outline: none;
       border-color: var(--color-text);
     }
 
@@ -962,4 +991,16 @@ main {
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--color-text-muted);
+}
+
+/* Respect reduced-motion preference (WCAG 2.3.3). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
