@@ -171,6 +171,32 @@ func TestSetThemeSystemClearsCookie(t *testing.T) {
 	}
 }
 
+func TestSetThemeRedirectIsNeverOpen(t *testing.T) {
+	h := newTestHandler(t)
+
+	// Hostile or unknown Referers must all fall back to the homepage; only
+	// allowlisted page paths may be echoed into the redirect.
+	referers := []string{
+		"http://evil.com/speed_reader/../../etc",
+		"http://example.com//evil.com",  // protocol-relative escape
+		"http://example.com/\\evil.com", // backslash variant
+		"http://example.com/admin",      // not a page on this site
+		"https://example.com/theme",     // valid URL, non-page path
+		"://not a url",                  // unparsable
+	}
+	for _, ref := range referers {
+		req := httptest.NewRequest(http.MethodPost, "/theme", strings.NewReader("theme=dark"))
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		req.Header.Set("Referer", ref)
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, req)
+
+		if loc := rec.Header().Get("Location"); loc != "/" {
+			t.Errorf("Referer %q: Location = %q, want /", ref, loc)
+		}
+	}
+}
+
 func TestSetThemeRejectsUnknownValues(t *testing.T) {
 	h := newTestHandler(t)
 

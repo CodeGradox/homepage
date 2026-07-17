@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
-	"strings"
 	"time"
 
 	"homepage/internal/assets"
@@ -94,6 +93,7 @@ func (s *Server) setTheme(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:     themeCookie,
 		Path:     "/",
+		Secure:   true,
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
 	}
@@ -113,12 +113,23 @@ func (s *Server) setTheme(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, returnPath(r.Referer()), http.StatusSeeOther)
 }
 
-// returnPath turns the Referer header into a safe same-site redirect target,
-// falling back to the homepage if it is missing or points elsewhere.
+// pagePaths is the allowlist for the theme toggle's return redirect — exactly
+// the site's page routes.
+var pagePaths = []string{"/", "/speed_reader", "/scrollable_table_patterns", "/wcag_contrast"}
+
+// returnPath turns the Referer header into a safe redirect target, falling
+// back to the homepage unless it matches a known page. Returning the allowlist
+// constant rather than the parsed value means no attacker-controlled bytes can
+// reach the redirect.
 func returnPath(referer string) string {
 	u, err := url.Parse(referer)
-	if err != nil || u.Path == "" || !strings.HasPrefix(u.Path, "/") {
+	if err != nil {
 		return "/"
 	}
-	return u.Path
+	for _, p := range pagePaths {
+		if u.Path == p {
+			return p
+		}
+	}
+	return "/"
 }
