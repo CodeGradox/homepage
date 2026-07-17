@@ -5,6 +5,9 @@ import (
 	"io/fs"
 	"log/slog"
 	"net/http"
+	"net/url"
+	"strings"
+	"time"
 
 	"homepage/internal/assets"
 	"homepage/internal/importmap"
@@ -52,6 +55,10 @@ func (s *Server) Handler(publicFS fs.FS) http.Handler {
 	mux.HandleFunc("GET /scrollable_table_patterns", s.scrollableTablePatterns)
 	mux.HandleFunc("GET /wcag_contrast", s.wcagContrast)
 
+	// Theme preference — the sidebar toggle posts here; the choice is stored in
+	// a cookie so it survives across visits without any client-side JavaScript.
+	mux.HandleFunc("POST /theme", s.setTheme)
+
 	// Health check — returns 200 if the app is up. Matches Rails' /up.
 	mux.HandleFunc("GET /up", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -78,4 +85,40 @@ func (s *Server) scrollableTablePatterns(w http.ResponseWriter, r *http.Request)
 
 func (s *Server) wcagContrast(w http.ResponseWriter, r *http.Request) {
 	s.renderer.render(w, r, "wcag_contrast", nil)
+}
+
+// setTheme stores the visitor's theme choice in a cookie and sends them back to
+// the page they came from. Choosing "system" clears the cookie instead, so the
+// site falls back to the OS preference.
+func (s *Server) setTheme(w http.ResponseWriter, r *http.Request) {
+	cookie := &http.Cookie{
+		Name:     themeCookie,
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	}
+
+	switch theme := r.FormValue("theme"); theme {
+	case "light", "dark":
+		cookie.Value = theme
+		cookie.MaxAge = int((365 * 24 * time.Hour).Seconds())
+	case "system":
+		cookie.MaxAge = -1
+	default:
+		http.Error(w, "invalid theme", http.StatusBadRequest)
+		return
+	}
+	http.SetCookie(w, cookie)
+
+	http.Redirect(w, r, returnPath(r.Referer()), http.StatusSeeOther)
+}
+
+// returnPath turns the Referer header into a safe same-site redirect target,
+// falling back to the homepage if it is missing or points elsewhere.
+func returnPath(referer string) string {
+	u, err := url.Parse(referer)
+	if err != nil || u.Path == "" || !strings.HasPrefix(u.Path, "/") {
+		return "/"
+	}
+	return u.Path
 }
