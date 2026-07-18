@@ -174,25 +174,36 @@ func TestSetThemeSystemClearsCookie(t *testing.T) {
 func TestSetThemeRedirectIsNeverOpen(t *testing.T) {
 	h := newTestHandler(t)
 
-	// Hostile or unknown Referers must all fall back to the homepage; only
-	// allowlisted page paths may be echoed into the redirect.
-	referers := []string{
-		"http://evil.com/speed_reader/../../etc",
-		"http://example.com//evil.com",  // protocol-relative escape
-		"http://example.com/\\evil.com", // backslash variant
-		"http://example.com/admin",      // not a page on this site
-		"https://example.com/theme",     // valid URL, non-page path
-		"://not a url",                  // unparsable
+	// Rails-style redirect_back_or_to semantics: same-host (or relative)
+	// Referers are followed as a plain path, everything else — other hosts and
+	// paths a browser could reinterpret as an external URL — falls back to "/".
+	// httptest requests are served on host "example.com".
+	cases := []struct {
+		referer string
+		want    string
+	}{
+		{"http://example.com/speed_reader", "/speed_reader"},
+		{"https://example.com/wcag_contrast?fg=fff", "/wcag_contrast"},
+		{"/scrollable_table_patterns", "/scrollable_table_patterns"}, // relative Referer
+		{"http://example.com", "/"},                                  // same host, no path
+		{"http://evil.com/speed_reader", "/"},                        // other host
+		{"http://example.com//evil.com", "/"},                        // protocol-relative escape
+		{"//evil.com/speed_reader", "/"},                             // protocol-relative, no scheme
+		{"http://example.com/\\evil.com", "/"},                       // backslash variant
+		{"://not a url", "/"},                                        // unparsable
+		{"", "/"},                                                    // no Referer at all
 	}
-	for _, ref := range referers {
+	for _, c := range cases {
 		req := httptest.NewRequest(http.MethodPost, "/theme", strings.NewReader("theme=dark"))
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-		req.Header.Set("Referer", ref)
+		if c.referer != "" {
+			req.Header.Set("Referer", c.referer)
+		}
 		rec := httptest.NewRecorder()
 		h.ServeHTTP(rec, req)
 
-		if loc := rec.Header().Get("Location"); loc != "/" {
-			t.Errorf("Referer %q: Location = %q, want /", ref, loc)
+		if loc := rec.Header().Get("Location"); loc != c.want {
+			t.Errorf("Referer %q: Location = %q, want %q", c.referer, loc, c.want)
 		}
 	}
 }

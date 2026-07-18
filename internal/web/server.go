@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"homepage/internal/assets"
@@ -110,26 +111,33 @@ func (s *Server) setTheme(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, cookie)
 
-	http.Redirect(w, r, returnPath(r.Referer()), http.StatusSeeOther)
+	// #nosec G710 -- returnPath only follows Referers whose host matches this
+	// request's host and strips them to a plain path, mirroring Rails'
+	// redirect_back_or_to; everything else falls back to "/".
+	http.Redirect(w, r, returnPath(r), http.StatusSeeOther)
 }
 
-// pagePaths is the allowlist for the theme toggle's return redirect — exactly
-// the site's page routes.
-var pagePaths = []string{"/", "/speed_reader", "/scrollable_table_patterns", "/wcag_contrast"}
-
-// returnPath turns the Referer header into a safe redirect target, falling
-// back to the homepage unless it matches a known page. Returning the allowlist
-// constant rather than the parsed value means no attacker-controlled bytes can
-// reach the redirect.
-func returnPath(referer string) string {
-	u, err := url.Parse(referer)
+// returnPath mirrors Rails' redirect_back_or_to: follow the Referer when it
+// points at the host serving this request (or is a relative path), otherwise
+// fall back to the homepage. Only the path is echoed back, and paths a browser
+// could reinterpret as external URLs ("//host", backslashes) are rejected.
+func returnPath(r *http.Request) string {
+	ref := r.Referer()
+	u, err := url.Parse(ref)
 	if err != nil {
 		return "/"
 	}
-	for _, p := range pagePaths {
-		if u.Path == p {
-			return p
-		}
+
+	sameHost := u.Host == r.Host
+	relative := u.Host == "" && u.Scheme == "" && strings.HasPrefix(ref, "/") && !strings.HasPrefix(ref, "//")
+	if !sameHost && !relative {
+		return "/"
 	}
-	return "/"
+
+	// Validate the decoded path so encoded variants (%5C, %2F) can't sneak an
+	// external-looking location through, then redirect to the escaped form.
+	if !strings.HasPrefix(u.Path, "/") || strings.HasPrefix(u.Path, "//") || strings.ContainsAny(u.Path, `\`) {
+		return "/"
+	}
+	return u.EscapedPath()
 }
