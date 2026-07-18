@@ -27,21 +27,6 @@ type pageData struct {
 	Data  any
 }
 
-// themeCookie stores the visitor's theme preference. "system" is never stored —
-// the absence of the cookie means "follow the OS preference".
-const themeCookie = "theme"
-
-// themeFromRequest reads the theme cookie, treating anything unexpected as
-// "system" so a stale or tampered cookie can't break rendering.
-func themeFromRequest(r *http.Request) string {
-	if c, err := r.Cookie(themeCookie); err == nil {
-		if v := c.Value; v == "light" || v == "dark" {
-			return v
-		}
-	}
-	return "system"
-}
-
 // newRenderer parses layout.html.tmpl together with every other *.html.tmpl in
 // tmplFS, wiring in the template helpers (asset, importmapTags).
 func newRenderer(tmplFS fs.FS, funcs template.FuncMap) (*renderer, error) {
