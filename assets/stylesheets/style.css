@@ -24,6 +24,17 @@
   --section-gap: 2rem;
 }
 
+/* Theme override — the server sets data-theme from the visitor's cookie.
+   Forcing color-scheme makes every light-dark() above follow the choice;
+   without the attribute the OS preference wins. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -179,6 +190,38 @@ aside {
       a,
       span {
         display: block;
+      }
+    }
+  }
+
+  .theme-toggle {
+    display: flex;
+    border: var(--border-width) solid var(--color-border);
+
+    button {
+      flex: 1;
+      padding: 0.4rem 0;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      & + button {
+        border-left: var(--border-width) solid var(--color-border-soft);
+      }
+
+      &:hover {
+        color: var(--color-text);
+      }
+
+      &[aria-pressed="true"] {
+        background: var(--color-text);
+        color: var(--color-bg);
       }
     }
   }

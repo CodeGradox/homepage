@@ -52,6 +52,10 @@ func (s *Server) Handler(publicFS fs.FS) http.Handler {
 	mux.HandleFunc("GET /scrollable_table_patterns", s.scrollableTablePatterns)
 	mux.HandleFunc("GET /wcag_contrast", s.wcagContrast)
 
+	// Theme preference — the sidebar toggle posts here; the choice is stored in
+	// a cookie so it survives across visits without any client-side JavaScript.
+	mux.HandleFunc("POST /theme", s.setTheme)
+
 	// Health check — returns 200 if the app is up. Matches Rails' /up.
 	mux.HandleFunc("GET /up", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)

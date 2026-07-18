@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"{{if ne .Theme "system"}} data-theme="{{.Theme}}"{{end}}>
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,3 +15,17 @@
     {{block "content" .}}{{end}}
   </body>
 </html>
+
+{{/* Sidebar theme switcher — included by every page's aside. Dot is the current
+     theme ("system", "light" or "dark"). Posts to the server, which stores the
+     choice in a cookie, so it works without JavaScript. */}}
+{{define "theme_toggle"}}
+<div class="section">
+  <h2>Theme</h2>
+  <form class="theme-toggle" method="post" action="/theme">
+    <button type="submit" name="theme" value="system" aria-pressed="{{eq . "system"}}">System</button>
+    <button type="submit" name="theme" value="light" aria-pressed="{{eq . "light"}}">Light</button>
+    <button type="submit" name="theme" value="dark" aria-pressed="{{eq . "dark"}}">Dark</button>
+  </form>
+</div>
+{{end}}

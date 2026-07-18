@@ -83,6 +83,147 @@ func TestImportMapAndFingerprintedAssetsAreWired(t *testing.T) {
 	}
 }
 
+func TestThemeToggleRendered(t *testing.T) {
+	h := newTestHandler(t)
+	for _, path := range []string{"/", "/speed_reader", "/scrollable_table_patterns", "/wcag_contrast"} {
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, path, nil))
+		if !strings.Contains(rec.Body.String(), `<form class="theme-toggle" method="post" action="/theme">`) {
+			t.Errorf("%s: sidebar is missing the theme toggle", path)
+		}
+	}
+}
+
+func TestThemeCookieControlsDataThemeAttribute(t *testing.T) {
+	h := newTestHandler(t)
+
+	cases := []struct {
+		cookie   string // empty means no cookie sent
+		contains string
+		excludes string
+	}{
+		{"", "", `data-theme`},
+		{"light", `<html lang="en" data-theme="light">`, ""},
+		{"dark", `<html lang="en" data-theme="dark">`, ""},
+		{"bogus", "", `data-theme`}, // unknown values fall back to system
+	}
+	for _, c := range cases {
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		if c.cookie != "" {
+			req.AddCookie(&http.Cookie{Name: "theme", Value: c.cookie})
+		}
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, req)
+
+		body := rec.Body.String()
+		if c.contains != "" && !strings.Contains(body, c.contains) {
+			t.Errorf("cookie %q: body missing %q", c.cookie, c.contains)
+		}
+		if c.excludes != "" && strings.Contains(body, c.excludes) {
+			t.Errorf("cookie %q: body unexpectedly contains %q", c.cookie, c.excludes)
+		}
+	}
+}
+
+func TestSetThemeStoresCookieAndRedirects(t *testing.T) {
+	h := newTestHandler(t)
+
+	req := httptest.NewRequest(http.MethodPost, "/theme", strings.NewReader("theme=dark"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Referer", "http://example.com/speed_reader")
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusSeeOther {
+		t.Fatalf("status = %d, want 303", rec.Code)
+	}
+	if loc := rec.Header().Get("Location"); loc != "/speed_reader" {
+		t.Errorf("Location = %q, want /speed_reader", loc)
+	}
+
+	cookies := rec.Result().Cookies()
+	if len(cookies) != 1 || cookies[0].Name != "theme" || cookies[0].Value != "dark" {
+		t.Fatalf("cookies = %v, want one theme=dark cookie", cookies)
+	}
+	if cookies[0].MaxAge <= 0 {
+		t.Errorf("theme cookie MaxAge = %d, want a positive lifetime", cookies[0].MaxAge)
+	}
+}
+
+func TestSetThemeSystemClearsCookie(t *testing.T) {
+	h := newTestHandler(t)
+
+	req := httptest.NewRequest(http.MethodPost, "/theme", strings.NewReader("theme=system"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusSeeOther {
+		t.Fatalf("status = %d, want 303", rec.Code)
+	}
+	if loc := rec.Header().Get("Location"); loc != "/" {
+		t.Errorf("Location = %q, want / when Referer is absent", loc)
+	}
+
+	cookies := rec.Result().Cookies()
+	if len(cookies) != 1 || cookies[0].Name != "theme" || cookies[0].MaxAge >= 0 {
+		t.Fatalf("cookies = %v, want an expired theme cookie", cookies)
+	}
+}
+
+func TestSetThemeRedirectIsNeverOpen(t *testing.T) {
+	h := newTestHandler(t)
+
+	// Rails-style redirect_back_or_to semantics: same-host (or relative)
+	// Referers are followed as a plain path, everything else — other hosts and
+	// paths a browser could reinterpret as an external URL — falls back to "/".
+	// httptest requests are served on host "example.com".
+	cases := []struct {
+		referer string
+		want    string
+	}{
+		{"http://example.com/speed_reader", "/speed_reader"},
+		{"https://example.com/wcag_contrast?fg=fff", "/wcag_contrast"},
+		{"/scrollable_table_patterns", "/scrollable_table_patterns"}, // relative Referer
+		{"http://example.com", "/"},                                  // same host, no path
+		{"http://evil.com/speed_reader", "/"},                        // other host
+		{"http://example.com//evil.com", "/"},                        // protocol-relative escape
+		{"//evil.com/speed_reader", "/"},                             // protocol-relative, no scheme
+		{"http://example.com/\\evil.com", "/"},                       // backslash variant
+		{"://not a url", "/"},                                        // unparsable
+		{"", "/"},                                                    // no Referer at all
+	}
+	for _, c := range cases {
+		req := httptest.NewRequest(http.MethodPost, "/theme", strings.NewReader("theme=dark"))
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		if c.referer != "" {
+			req.Header.Set("Referer", c.referer)
+		}
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, req)
+
+		if loc := rec.Header().Get("Location"); loc != c.want {
+			t.Errorf("Referer %q: Location = %q, want %q", c.referer, loc, c.want)
+		}
+	}
+}
+
+func TestSetThemeRejectsUnknownValues(t *testing.T) {
+	h := newTestHandler(t)
+
+	req := httptest.NewRequest(http.MethodPost, "/theme", strings.NewReader("theme=hotdog"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Errorf("status = %d, want 400", rec.Code)
+	}
+	if len(rec.Result().Cookies()) != 0 {
+		t.Error("invalid theme should not set a cookie")
+	}
+}
+
 func TestHealthCheck(t *testing.T) {
 	rec := httptest.NewRecorder()
 	newTestHandler(t).ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/up", nil))

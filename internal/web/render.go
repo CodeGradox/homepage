@@ -20,6 +20,13 @@ type renderer struct {
 	pages map[string]*template.Template
 }
 
+// pageData is what every template receives: the visitor's theme preference for
+// the layout plus the page-specific payload.
+type pageData struct {
+	Theme string // "system", "light" or "dark"
+	Data  any
+}
+
 // newRenderer parses layout.html.tmpl together with every other *.html.tmpl in
 // tmplFS, wiring in the template helpers (asset, importmapTags).
 func newRenderer(tmplFS fs.FS, funcs template.FuncMap) (*renderer, error) {
@@ -70,7 +77,7 @@ func (r *renderer) render(w http.ResponseWriter, req *http.Request, page string,
 	}
 
 	var buf bytes.Buffer
-	if err := t.ExecuteTemplate(&buf, "layout", data); err != nil {
+	if err := t.ExecuteTemplate(&buf, "layout", pageData{Theme: themeFromRequest(req), Data: data}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

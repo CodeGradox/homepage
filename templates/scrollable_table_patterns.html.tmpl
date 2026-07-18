@@ -25,6 +25,8 @@
     </div>
   </div>
 
+  {{template "theme_toggle" .Theme}}
+
   <div class="section-code">No. 990-22-3.0</div>
 </aside>
 
@@ -56,11 +58,11 @@
           <table class="data-table">
             <thead>
               <tr>
-                {{range .Columns}}<th>{{.}}</th>{{end}}
+                {{range .Data.Columns}}<th>{{.}}</th>{{end}}
               </tr>
             </thead>
             <tbody>
-              {{range .Rows}}
+              {{range .Data.Rows}}
               <tr>
                 {{range .Cells}}<td>{{.}}</td>{{end}}
                 <td class="action-cell"><button class="table-action" type="button">{{.Action}}</button></td>
@@ -84,7 +86,7 @@
             <table class="data-table data-table--header-clone" aria-hidden="true">
               <thead>
                 <tr>
-                  <th>{{.HeaderFrozen}}</th>
+                  <th>{{.Data.HeaderFrozen}}</th>
                 </tr>
               </thead>
             </table>
@@ -93,7 +95,7 @@
             <table class="data-table data-table--header-clone data-table--header-scrollable" aria-hidden="true" data-scrollable-table-patterns-target="headerTable">
               <thead>
                 <tr>
-                  {{range .HeaderScroll}}<th>{{.}}</th>{{end}}
+                  {{range .Data.HeaderScroll}}<th>{{.}}</th>{{end}}
                 </tr>
               </thead>
             </table>
@@ -105,11 +107,11 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  {{range .Columns}}<th>{{.}}</th>{{end}}
+                  {{range .Data.Columns}}<th>{{.}}</th>{{end}}
                 </tr>
               </thead>
               <tbody>
-                {{range .Rows}}
+                {{range .Data.Rows}}
                 <tr>
                   {{range .Cells}}<td>{{.}}</td>{{end}}
                   <td class="action-cell"><button class="table-action" type="button">{{.Action}}</button></td>
