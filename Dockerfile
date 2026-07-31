@@ -19,7 +19,7 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /homepage .
 
 # Final stage: a minimal, non-root image. distroless/static ships CA certs and a
 # nonroot user but nothing else — no shell, no package manager.
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM gcr.io/distroless/static-debian13:nonroot
 
 COPY --from=build /homepage /homepage
 
